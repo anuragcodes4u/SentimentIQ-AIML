@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Batch Analysis | SentimentIQ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="/">Sentiment<span>IQ</span></a><nav><a href="/">Analyze</a><a class="active" href="/batch">Batch CSV</a></nav></header>
+<main class="layout">
+  <section class="hero"><div class="eyebrow">BATCH INFERENCE</div><h1>Analyze <span>multiple reviews</span> at once.</h1><p>Upload a CSV file with a column named <code>text</code>. The app predicts sentiment and class scores for each row.</p></section>
+  <section class="panel">
+    <h2>Upload CSV</h2><p class="sub">Example file: data/sample_reviews.csv</p>
+    <form method="post" enctype="multipart/form-data"><label for="file">CSV file</label><input id="file" type="file" name="file" accept=".csv" required><button type="submit">Run batch analysis →</button></form>
+    {% if error %}<div class="alert">{{ error }}</div>{% endif %}
+  </section>
+  {% if rows %}
+  <section class="panel"><div class="panel-head"><div><h2>Preview results</h2><p>Showing up to 20 rows. Download the full results below.</p></div></div>
+    <div class="table-wrap"><table><thead><tr>{% for key in rows[0].keys() %}<th>{{ key }}</th>{% endfor %}</tr></thead><tbody>{% for row in rows %}<tr>{% for value in row.values() %}<td>{{ value }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>
+    <a class="download" href="/download-results">Download predictions CSV ↓</a>
+  </section>
+  {% endif %}
+  <p class="footnote"><a href="/">← Back to single-text analysis</a></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SentimentIQ | AI Sentiment Analysis</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">Sentiment<span>IQ</span></a>
+  <nav><a class="active" href="/">Analyze</a><a href="/batch">Batch CSV</a></nav>
+</header>
+<main class="layout">
+  <section class="hero">
+    <div class="eyebrow">NATURAL LANGUAGE PROCESSING · MACHINE LEARNING</div>
+    <h1>Understand the <span>feeling</span> behind the words.</h1>
+    <p>Analyze text with a TF-IDF + Logistic Regression pipeline. Get a predicted label and class probability estimates.</p>
+    <div class="pills"><span>Python</span><span>Scikit-learn</span><span>Flask</span><span>NLP</span></div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><div><h2>Text analyzer</h2><p>Paste a review, comment, or short message.</p></div><span class="live">● LOCAL MODEL</span></div>
+    <form method="post">
+      <label for="review">Text to analyze</label>
+      <textarea id="review" name="review" maxlength="5000" placeholder="Example: The support team was helpful and solved my issue quickly..." required>{{ review }}</textarea>
+      <div class="form-foot"><span>Maximum 5,000 characters</span><button type="submit">Analyze sentiment <span>→</span></button></div>
+    </form>
+    {% if error %}<div class="alert">{{ error }}</div>{% endif %}
+    {% if result %}
+    <div class="result-card">
+      <div class="result-title"><div><span class="mini-label">PREDICTED SENTIMENT</span><h3 class="{{ result.label }}">{{ result.label|title }}</h3></div><div class="confidence"><strong>{{ result.confidence }}%</strong><span>top class score</span></div></div>
+      <p class="disclaimer">Probability scores are model estimates, not guaranteed certainty.</p>
+      <div class="score-list">
+      {% for label, score in result.scores.items() %}
+        <div class="score-row"><div class="score-label"><span>{{ label|title }}</span><b>{{ score }}%</b></div><div class="track"><div class="fill {{ label }}" style="width: {{ score }}%"></div></div></div>
+      {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  <section class="panel history">
+    <div class="panel-head"><div><h2>Recent predictions</h2><p>Stored temporarily in this browser session.</p></div></div>
+    {% if history %}
+      {% for item in history %}
+      <div class="history-item"><div class="history-text"><strong>{{ item.text }}</strong><span>{{ item.time }}</span></div><span class="tag {{ item.label }}">{{ item.label|title }} · {{ item.confidence }}%</span></div>
+      {% endfor %}
+    {% else %}<p class="empty">Your recent analyses will appear here.</p>{% endif %}
+  </section>
+  <p class="footnote">Educational prototype using a small synthetic dataset. Validate on a licensed, representative dataset before making real-world claims.</p>
+</main>
+</body>
+</html>
